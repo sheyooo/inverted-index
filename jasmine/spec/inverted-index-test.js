@@ -1,7 +1,5 @@
 describe('Read book data', function () {
-  var app, booksObject;
-
-  
+  var app, booksObject;  
 
   describe('Read Book data', function () {
 
@@ -17,12 +15,12 @@ describe('Read book data', function () {
 
     it("ensures objects in json array contains strings", function() {
       expect(booksObject.every(function (object) {
-        return (typeof(object.title) == 'string' && typeof(object.text) == 'string')
+        return (typeof(object.title) == 'string' && typeof(object.text) == 'string');
       })).toEqual(true);
     });
 
     it("ensures index is not overwritten", function() {
-      let app = new InvertedIndex();
+      var app = new InvertedIndex();
       app.createIndex('../jasmine/books.json');
       
       expect(app.index.of).toEqual([0, 1]);
@@ -34,7 +32,6 @@ describe('Read book data', function () {
       expect(app.index.another).toEqual([0]);
       
     });
-
   });
 
   describe('Populate index', function () {
@@ -48,9 +45,7 @@ describe('Read book data', function () {
       expect(app.getIndex().lord).toEqual([1]);
       expect(app.getIndex().a).toEqual([0, 1]);
     });
-
   });
-
 
   describe('Search Index', function() {
 
@@ -81,5 +76,4 @@ describe('Read book data', function () {
       expect(app.searchIndex(['an', 'unusual', 'alliance', 'of', 'man'])).toEqual([[1],[1],[1],[0, 1],[1]]);
     });
   });
-
 });
