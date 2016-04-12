@@ -1,0 +1,11 @@
+[
+  {
+    "title": "Another document in Wonderland",
+    "text": "This document is here to ensure that the index not being overwritten is tested properly"
+  },
+
+  {
+    "title": "The Lord of the Rings: The Fellowship of the Ring.",
+    "text": "An unusual alliance of man, elf, dwarf, wizard and hobbit seek to destroy a powerful ring."
+  }
+]
