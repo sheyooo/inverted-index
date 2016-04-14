@@ -75,5 +75,16 @@ describe('Read book data', function () {
       expect(app.searchIndex(['lord', 'of', 'the', 'rings'])).toEqual([[1],[0, 1],[1],[1]]);
       expect(app.searchIndex(['an', 'unusual', 'alliance', 'of', 'man'])).toEqual([[1],[1],[1],[0, 1],[1]]);
     });
+
+    it("ensures search can handle a varied number of arguments and strings with space characters", function() {
+      expect(app.searchIndex('alice', 'alice in wonderland', 'in')).toEqual([[0],[0],[0],[0],[0]]);
+      expect(app.searchIndex('lord', 'of', 'the', 'rings')).toEqual([[1],[0, 1],[1],[1]]);
+      expect(app.searchIndex('an', 'unusual', 'alliance', 'of', 'man')).toEqual([[1],[1],[1],[0, 1],[1]]);
+    });
+
+    it("ensures search can handle edge cases", function() {
+      expect(app.searchIndex('alice', 'notAvailable', 'in')).toEqual([[0],[],[0]]);
+      
+    });
   });
 });

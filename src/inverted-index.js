@@ -1,7 +1,10 @@
 'use strict';
 
 //The InvertedIndex object takes JSON files and indexes them
-var InvertedIndex = function() {
+/**
+ * [InvertedIndex description]
+ */
+var InvertedIndex = function () {
   var that = this;
 
   this.index = {};
@@ -77,16 +80,35 @@ var InvertedIndex = function() {
 
         if (typeof that.index[arg] !== 'undefined') {
           result.push(that.index[arg]);
+        } else if (searchWords.length > 1) {
+          //if multiple searchWords pushes empty array to the result
+          result.push([]);
         }
       }
     };
 
     if (query instanceof Array) {
+
       performSearch(query);
-    } else {
+    } else if (arguments.length > 1) {
+
+      var terms = [];
+      var searchTerms = Array.prototype.slice.call(arguments);
+
+      //If multiple arguments with strings containing space characters
+      searchTerms.forEach(function (arg) {
+        var args = arg.split(' ');
+        args.forEach(function (word) {
+          terms.push(word);
+        });
+      });
+
+      performSearch(terms);
+    } else if (typeof(query) == 'string') {
       //Split the query for space characters
       performSearch(query.split(' '));
     }
+    
 
     return result;
   };
@@ -106,7 +128,7 @@ var InvertedIndex = function() {
    * @return {String}      The cleaned up string
    */
   this.normalize = function (word) {
-    word = word.replace(/[,";:?!@#$%(^)&*()_+|.><{}±]/, '');
+    word = word.replace(/[,";:?!@#$%(^)&*()_+|.><{}±=-]/, '');
     return word.toLowerCase();
   };
 
