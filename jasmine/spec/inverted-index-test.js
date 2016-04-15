@@ -1,5 +1,5 @@
-describe('Read book data', function () {
-  var app, booksObject;  
+describe('InvertedIndex Test Suite', function () {
+  var app, app1, booksObject;  
 
   describe('Read Book data', function () {
 
@@ -20,16 +20,18 @@ describe('Read book data', function () {
     });
 
     it("ensures index is not overwritten", function() {
-      var app = new InvertedIndex();
-      app.createIndex('../jasmine/books.json');
+      app1 = new InvertedIndex();
+      //Create first index
+      app1.createIndex('../jasmine/books.json');
       
-      expect(app.index.of).toEqual([0, 1]);
-      expect(app.index.another).toBeUndefined();
+      expect(app1.index.of).toEqual([0, 1]);
+      expect(app1.index.another).toBeUndefined();
 
-      app.createIndex('../jasmine/another.json');
+      //Create an extra index
+      app1.createIndex('../jasmine/another.json');
 
-      expect(app.index.of).toEqual([0, 1]);
-      expect(app.index.another).toEqual([0]);
+      expect(app1.index.of).toEqual([0, 1]);
+      expect(app1.index.another).toEqual([0]);
       
     });
   });
