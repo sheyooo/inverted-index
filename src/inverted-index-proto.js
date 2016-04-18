@@ -2,12 +2,16 @@
 
 //The InvertedIndex object takes JSON files and indexes them
 /**
- * [InvertedIndex description]
+ * The inverted index object
  */
 var InvertedIndex = function () {
   this.index = {};
 };
 
+/**
+ * Where the word paths are stored
+ * @type {Object}
+ */
 InvertedIndex.prototype.index = {};
 
 /**

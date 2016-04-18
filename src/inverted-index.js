@@ -128,7 +128,7 @@ var InvertedIndex = function () {
    * @return {String}      The cleaned up string
    */
   this.normalize = function (word) {
-    word = word.replace(/[,";:?!@#$%(^)&*()_+|.><{}±=-]/, '');
+    word = word.replace(/[,";:?!@#$%(^)&*()_+|.><{}±=-]/g, '');
     return word.toLowerCase();
   };
 
