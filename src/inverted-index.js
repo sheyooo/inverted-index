@@ -2,7 +2,7 @@
 
 //The InvertedIndex object takes JSON files and indexes them
 /**
- * [InvertedIndex description]
+ * A JavaScript Class that indexes words in documents for fast searches
  */
 var InvertedIndex = function () {
   var that = this;
