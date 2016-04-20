@@ -8,6 +8,7 @@ var InvertedIndex = function () {
   var that = this;
 
   this.index = {};
+  this.jsonArray = null;
 
   /**
    * Returns index property of the Object
@@ -22,19 +23,18 @@ var InvertedIndex = function () {
    * @param  {String} filepath String representing the path of the file
    * @return {Object}          Parsed JSON Response of the JSON file
    */
-  this.readJsonFile = function (filepath) {
+  this.readJsonFile = function (filepath, callback) {
     var response;
     var xhr = new XMLHttpRequest();
 
-    xhr.open('GET', filepath, false);
+    xhr.open('GET', filepath);
     xhr.send();
-    if (xhr.status === 200) {
-      var data = JSON.parse(xhr.responseText);
-      response = data;
-      that.jsonArray = data;
-    }
+    xhr.onload = function () {
+      var response = JSON.parse(this.response);
+      that.jsonArray = response;
 
-    return response;
+      callback(response);
+    };
   };
 
   /**
@@ -42,27 +42,29 @@ var InvertedIndex = function () {
    * @param  {String} filepath String representing the filepath
    * @return {Object}          Parsed JSON Response from the readJsonFile method
    */
-  this.createIndex = function (filepath) {
+  this.createIndex = function (filepath, callback) {
 
-    var json = that.readJsonFile(filepath);
-    
-    json.forEach(function (book, location) {
-      var words = book.title + ' ' + book.text;
-      words = that.tokenize(words);
+    var json = that.readJsonFile(filepath, function (json) {
 
-      words.forEach(function (word) {
-        var normalizedWord = that.normalize(word);
+      json.forEach(function (book, location) {
+        var words = book.title + ' ' + book.text;
+        words = that.tokenize(words);
 
-        if (! that.index.hasOwnProperty(normalizedWord) ) {
-          that.index[normalizedWord] = [location];
+        words.forEach(function (word) {
+          var normalizedWord = that.normalize(word);
 
-        } else if(that.index[normalizedWord].indexOf(location) < 0) {
-          that.index[normalizedWord].push(location);
-        }
+          if (! that.index.hasOwnProperty(normalizedWord) ) {
+            that.index[normalizedWord] = [location];
+
+          } else if(that.index[normalizedWord].indexOf(location) < 0) {
+            that.index[normalizedWord].push(location);
+          }
+        });
       });
+      
+      callback();
     });
 
-    return json;
   };
 
   /**

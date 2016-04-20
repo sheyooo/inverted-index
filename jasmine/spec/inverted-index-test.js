@@ -3,36 +3,44 @@ describe('InvertedIndex Test Suite', function () {
 
   describe('Read Book data', function () {
 
-    beforeAll(function () {
-      booksObject = [];
+    beforeAll(function (done) {
       app = new InvertedIndex();
-      booksObject = app.createIndex('../jasmine/books.json');
+      app.createIndex('../jasmine/books.json', function (json) {
+        done();
+      });
     });
 
     it('books JSON should not be empty', function () {
-      expect(booksObject.length).toBeGreaterThan(0);
+      expect(app.jsonArray.length).toBeGreaterThan(0);
     });
 
     it("ensures objects in json array contains strings", function() {
-      expect(booksObject.every(function (object) {
+      expect(app.jsonArray.every(function (object) {
         return (typeof(object.title) == 'string' && typeof(object.text) == 'string');
       })).toEqual(true);
     });
 
-    it("ensures index is not overwritten", function() {
+    beforeAll(function (done) {
       app1 = new InvertedIndex();
       //Create first index
-      app1.createIndex('../jasmine/books.json');
-      
+      app1.createIndex('../jasmine/books.json', function () {
+        done();
+      });
+    });
+
+    it("ensures index is not overwritten | First Index Created", function(done) {
       expect(app1.index.of).toEqual([0, 1]);
       expect(app1.index.another).toBeUndefined();
+      //Create the second index for the next test :| Second Index Created
+      app1.createIndex('../jasmine/another.json', function (json) {
+        done();
+      });
+    });
 
-      //Create an extra index
-      app1.createIndex('../jasmine/another.json');
+    it("ensures index is not overwritten | Second Index Created", function() {
 
       expect(app1.index.of).toEqual([0, 1]);
       expect(app1.index.another).toEqual([0]);
-      
     });
   });
 
