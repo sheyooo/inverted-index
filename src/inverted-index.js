@@ -4,7 +4,7 @@
  */
 var InvertedIndex = function () {
   'use strict';
-  var that = this;
+  var self = this;
 
   this.index = {};
   this.jsonArray = null;
@@ -14,7 +14,7 @@ var InvertedIndex = function () {
    * @return Object 
    */
   this.getIndex = function () {
-    return that.index;
+    return self.index;
   };
 
   /**
@@ -28,7 +28,7 @@ var InvertedIndex = function () {
     xhr.send();
     xhr.onload = function () {
       var response = JSON.parse(this.response);
-      that.jsonArray = response;
+      self.jsonArray = response;
       callback(response);
     };
   };
@@ -39,16 +39,16 @@ var InvertedIndex = function () {
    * @return {Object}          Parsed JSON Response from the readJsonFile method
    */
   this.createIndex = function (filepath, callback) {
-    that.readJsonFile(filepath, function (json) {
+    self.readJsonFile(filepath, function (json) {
       json.forEach(function (book, location) {
         var words = book.title + ' ' + book.text;
-        words = that.tokenize(words);
+        words = self.tokenize(words);
         words.forEach(function (word) {
-          var normalizedWord = that.normalize(word);
-          if (!that.index.hasOwnProperty(normalizedWord)) {
-            that.index[normalizedWord] = [location];
-          } else if (that.index[normalizedWord].indexOf(location) < 0) {
-            that.index[normalizedWord].push(location);
+          var normalizedWord = self.normalize(word);
+          if (!self.index.hasOwnProperty(normalizedWord)) {
+            self.index[normalizedWord] = [location];
+          } else if (self.index[normalizedWord].indexOf(location) < 0) {
+            self.index[normalizedWord].push(location);
           }
         });
       });
@@ -66,9 +66,9 @@ var InvertedIndex = function () {
       var result = [];
       for (var i = 0; i < searchWords.length; i++) {
         var arg = searchWords[i];
-        arg = that.normalize(arg);
-        if (that.index[arg]) {
-          result.push(that.index[arg]);
+        arg = self.normalize(arg);
+        if (self.index[arg]) {
+          result.push(self.index[arg]);
         } else if (searchWords.length > 1) {
           //if multiple searchWords pushes empty array to the result
           result.push([]);
