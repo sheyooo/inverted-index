@@ -1,10 +1,9 @@
-'use strict';
-
-//The InvertedIndex object takes JSON files and indexes them
+// The InvertedIndex object takes JSON files and indexes them
 /**
  * A JavaScript Class that indexes words in documents for fast searches
  */
 var InvertedIndex = function () {
+  'use strict';
   var that = this;
 
   this.index = {};
@@ -19,20 +18,17 @@ var InvertedIndex = function () {
   };
 
   /**
-   * Performs a synchronous request for the json
+   * Performs an asynchronous request for the json
    * @param  {String} filepath String representing the path of the file
    * @return {Object}          Parsed JSON Response of the JSON file
    */
   this.readJsonFile = function (filepath, callback) {
-    var response;
     var xhr = new XMLHttpRequest();
-
     xhr.open('GET', filepath);
     xhr.send();
     xhr.onload = function () {
       var response = JSON.parse(this.response);
       that.jsonArray = response;
-
       callback(response);
     };
   };
@@ -43,28 +39,21 @@ var InvertedIndex = function () {
    * @return {Object}          Parsed JSON Response from the readJsonFile method
    */
   this.createIndex = function (filepath, callback) {
-
-    var json = that.readJsonFile(filepath, function (json) {
-
+    that.readJsonFile(filepath, function (json) {
       json.forEach(function (book, location) {
         var words = book.title + ' ' + book.text;
         words = that.tokenize(words);
-
         words.forEach(function (word) {
           var normalizedWord = that.normalize(word);
-
-          if (! that.index.hasOwnProperty(normalizedWord) ) {
+          if (!that.index.hasOwnProperty(normalizedWord)) {
             that.index[normalizedWord] = [location];
-
-          } else if(that.index[normalizedWord].indexOf(location) < 0) {
+          } else if (that.index[normalizedWord].indexOf(location) < 0) {
             that.index[normalizedWord].push(location);
           }
         });
       });
-      
       callback();
     });
-
   };
 
   /**
@@ -73,46 +62,39 @@ var InvertedIndex = function () {
    * @return {Array}       An array containing search results
    */
   this.searchIndex = function (query) {
-    var result = [];
-
     var performSearch = function (searchWords) {
+      var result = [];
       for (var i = 0; i < searchWords.length; i++) {
         var arg = searchWords[i];
         arg = that.normalize(arg);
-
-        if (typeof that.index[arg] !== 'undefined') {
+        if (that.index[arg]) {
           result.push(that.index[arg]);
         } else if (searchWords.length > 1) {
           //if multiple searchWords pushes empty array to the result
           result.push([]);
         }
       }
+
+      return result;
     };
 
     if (query instanceof Array) {
-
-      performSearch(query);
+      return performSearch(query);
     } else if (arguments.length > 1) {
-
       var terms = [];
       var searchTerms = Array.prototype.slice.call(arguments);
-
-      //If multiple arguments with strings containing space characters
+      // If multiple arguments with strings containing space characters
       searchTerms.forEach(function (arg) {
         var args = arg.split(' ');
         args.forEach(function (word) {
           terms.push(word);
         });
       });
-
-      performSearch(terms);
-    } else if (typeof(query) == 'string') {
-      //Split the query for space characters
-      performSearch(query.split(' '));
-    }
-    
-
-    return result;
+      return performSearch(terms);
+    } else if (typeof(query) === 'string') {
+      // Split the query for space characters
+      return performSearch(query.split(' '));
+    } 
   };
 
   /**
@@ -133,5 +115,4 @@ var InvertedIndex = function () {
     word = word.replace(/[,";:?!@#$%(^)&*()_+|.><{}±=-]/g, '');
     return word.toLowerCase();
   };
-
 };

@@ -2,53 +2,46 @@ describe('InvertedIndex Test Suite', function () {
   var app, app1, booksObject;  
 
   describe('Read Book data', function () {
-
     beforeAll(function (done) {
       app = new InvertedIndex();
-      app.createIndex('../jasmine/books.json', function (json) {
-        done();
-      });
+      app.createIndex('../jasmine/books.json', done);
     });
 
     it('books JSON should not be empty', function () {
       expect(app.jsonArray.length).toBeGreaterThan(0);
     });
 
-    it("ensures objects in json array contains strings", function() {
+    it('ensures objects in json array contains strings', function() {
       expect(app.jsonArray.every(function (object) {
-        return (typeof(object.title) == 'string' && typeof(object.text) == 'string');
+        return (typeof(object.title) === 'string' && typeof(object.text) === 'string');
       })).toEqual(true);
     });
 
-    beforeAll(function (done) {
-      app1 = new InvertedIndex();
-      //Create first index
-      app1.createIndex('../jasmine/books.json', function () {
-        done();
+    describe('Check Index is not overwritten', function () {
+      beforeAll(function (done) {
+        app1 = new InvertedIndex();
+        // Create first index
+        app1.createIndex('../jasmine/books.json', done);
       });
-    });
 
-    it("ensures index is not overwritten | First Index Created", function(done) {
-      expect(app1.index.of).toEqual([0, 1]);
-      expect(app1.index.another).toBeUndefined();
-      //Create the second index for the next test :| Second Index Created
-      app1.createIndex('../jasmine/another.json', function (json) {
-        done();
+      it('ensures index is not overwritten | First Index Created', function(done) {
+        expect(app1.index.of).toEqual([0, 1]);
+        expect(app1.index.another).toBeUndefined();
+        // Create the second index for the next test :| Second Index Created
+        app1.createIndex('../jasmine/another.json', done);
       });
-    });
 
-    it("ensures index is not overwritten | Second Index Created", function() {
+      it('ensures index is not overwritten | Second Index Created', function() {
 
-      expect(app1.index.of).toEqual([0, 1]);
-      expect(app1.index.another).toEqual([0]);
+        expect(app1.index.of).toEqual([0, 1]);
+        expect(app1.index.another).toEqual([0]);
+      });
     });
   });
 
   describe('Populate index', function () {
-
     it('assert that the index is created', function () {
       expect(app.index).toBeDefined();
-
       expect(app.getIndex().alice).toEqual([0]);
       expect(app.getIndex().wonderland).toEqual([0]);
       expect(app.getIndex().rings).toEqual([1]);
@@ -58,14 +51,13 @@ describe('InvertedIndex Test Suite', function () {
   });
 
   describe('Search Index', function() {
-
     it ('should be correct search result', function () {
       expect(app.searchIndex('Alice')).toEqual([[0]]);
       expect(app.searchIndex('DWARF')).toEqual([[1]]);
       expect(app.searchIndex('lord falls')).toEqual([[1], [0]]);
     });
 
-    it("verifies searching an index returns array of indices of correct object", function() {
+    it('verifies searching an index returns array of indices of correct object', function() {
       expect(app.searchIndex('wonderland')).toEqual([[0]]);
       expect(app.searchIndex('dwarf')).toEqual([[1]]);
       expect(app.searchIndex('hi')).toEqual([]);
@@ -74,27 +66,26 @@ describe('InvertedIndex Test Suite', function () {
       expect(app.searchIndex('of')).toEqual([[0, 1]]);
     });
 
-    it("can handle varied number of search terms", function() {
+    it('can handle varied number of search terms', function() {
       expect(app.searchIndex('alice in wonderland')).toEqual([[0],[0],[0]]);
       expect(app.searchIndex('lord of the rings')).toEqual([[1],[0, 1],[1],[1]]);
       expect(app.searchIndex('man a rabbit hole')).toEqual([[1],[0, 1],[0],[0]]);
     });
 
-    it("ensures search can handle an array of words", function() {
+    it('ensures search can handle an array of words', function() {
       expect(app.searchIndex(['alice', 'in', 'wonderland'])).toEqual([[0],[0],[0]]);
       expect(app.searchIndex(['lord', 'of', 'the', 'rings'])).toEqual([[1],[0, 1],[1],[1]]);
       expect(app.searchIndex(['an', 'unusual', 'alliance', 'of', 'man'])).toEqual([[1],[1],[1],[0, 1],[1]]);
     });
 
-    it("ensures search can handle a varied number of arguments and strings with space characters", function() {
+    it('ensures search can handle a varied number of arguments and strings with space characters', function() {
       expect(app.searchIndex('alice', 'alice in wonderland', 'in')).toEqual([[0],[0],[0],[0],[0]]);
       expect(app.searchIndex('lord', 'of', 'the', 'rings')).toEqual([[1],[0, 1],[1],[1]]);
       expect(app.searchIndex('an', 'unusual', 'alliance', 'of', 'man')).toEqual([[1],[1],[1],[0, 1],[1]]);
     });
 
-    it("ensures search can handle edge cases", function() {
+    it('ensures search can handle edge cases', function() {
       expect(app.searchIndex('alice', 'notAvailable', 'in')).toEqual([[0],[],[0]]);
-      
     });
   });
 });
