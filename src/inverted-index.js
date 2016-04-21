@@ -4,7 +4,7 @@
  */
 var InvertedIndex = function () {
   'use strict';
-  var self = this;
+  var _this = this;
 
   this.index = {};
   this.jsonArray = null;
@@ -14,7 +14,7 @@ var InvertedIndex = function () {
    * @return Object 
    */
   this.getIndex = function () {
-    return self.index;
+    return _this.index;
   };
 
   /**
@@ -28,7 +28,7 @@ var InvertedIndex = function () {
     xhr.send();
     xhr.onload = function () {
       var response = JSON.parse(this.response);
-      self.jsonArray = response;
+      _this.jsonArray = response;
       callback(response);
     };
   };
@@ -39,16 +39,16 @@ var InvertedIndex = function () {
    * @return {Object}          Parsed JSON Response from the readJsonFile method
    */
   this.createIndex = function (filepath, callback) {
-    self.readJsonFile(filepath, function (json) {
+    _this.readJsonFile(filepath, function (json) {
       json.forEach(function (book, location) {
         var words = book.title + ' ' + book.text;
-        words = self.tokenize(words);
+        words = _this.tokenize(words);
         words.forEach(function (word) {
-          var normalizedWord = self.normalize(word);
-          if (!self.index.hasOwnProperty(normalizedWord)) {
-            self.index[normalizedWord] = [location];
-          } else if (self.index[normalizedWord].indexOf(location) < 0) {
-            self.index[normalizedWord].push(location);
+          var normalizedWord = _this.normalize(word);
+          if (!_this.index.hasOwnProperty(normalizedWord)) {
+            _this.index[normalizedWord] = [location];
+          } else if (_this.index[normalizedWord].indexOf(location) < 0) {
+            _this.index[normalizedWord].push(location);
           }
         });
       });
@@ -66,9 +66,9 @@ var InvertedIndex = function () {
       var result = [];
       for (var i = 0; i < searchWords.length; i++) {
         var arg = searchWords[i];
-        arg = self.normalize(arg);
-        if (self.index[arg]) {
-          result.push(self.index[arg]);
+        arg = _this.normalize(arg);
+        if (_this.index[arg]) {
+          result.push(_this.index[arg]);
         } else if (searchWords.length > 1) {
           //if multiple searchWords pushes empty array to the result
           result.push([]);
