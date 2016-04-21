@@ -1,5 +1,7 @@
 describe('InvertedIndex Test Suite', function () {
-  var app, app1, booksObject;  
+  'use strict';
+  var app,
+      app1;  
 
   describe('Read Book data', function () {
     beforeAll(function (done) {
@@ -24,15 +26,14 @@ describe('InvertedIndex Test Suite', function () {
         app1.createIndex('../jasmine/books.json', done);
       });
 
-      it('ensures index is not overwritten | First Index Created', function(done) {
+      it('ensures index is not overwritten| First Index Created', function(done) {
         expect(app1.index.of).toEqual([0, 1]);
         expect(app1.index.another).toBeUndefined();
         // Create the second index for the next test :| Second Index Created
         app1.createIndex('../jasmine/another.json', done);
       });
 
-      it('ensures index is not overwritten | Second Index Created', function() {
-
+      it('ensures index is not overwritten| Second Index Created', function() {
         expect(app1.index.of).toEqual([0, 1]);
         expect(app1.index.another).toEqual([0]);
       });
@@ -57,7 +58,7 @@ describe('InvertedIndex Test Suite', function () {
       expect(app.searchIndex('lord falls')).toEqual([[1], [0]]);
     });
 
-    it('verifies searching an index returns array of indices of correct object', function() {
+    it('verifies searching an index returns index of correctly', function() {
       expect(app.searchIndex('wonderland')).toEqual([[0]]);
       expect(app.searchIndex('dwarf')).toEqual([[1]]);
       expect(app.searchIndex('hi')).toEqual([]);
@@ -67,25 +68,35 @@ describe('InvertedIndex Test Suite', function () {
     });
 
     it('can handle varied number of search terms', function() {
-      expect(app.searchIndex('alice in wonderland')).toEqual([[0],[0],[0]]);
-      expect(app.searchIndex('lord of the rings')).toEqual([[1],[0, 1],[1],[1]]);
-      expect(app.searchIndex('man a rabbit hole')).toEqual([[1],[0, 1],[0],[0]]);
+      expect(app.searchIndex('alice in wonderland'))
+        .toEqual([[0],[0],[0]]);
+      expect(app.searchIndex('lord of the rings'))
+        .toEqual([[1],[0, 1],[1],[1]]);
+      expect(app.searchIndex('man a rabbit hole'))
+        .toEqual([[1],[0, 1],[0],[0]]);
     });
 
     it('ensures search can handle an array of words', function() {
-      expect(app.searchIndex(['alice', 'in', 'wonderland'])).toEqual([[0],[0],[0]]);
-      expect(app.searchIndex(['lord', 'of', 'the', 'rings'])).toEqual([[1],[0, 1],[1],[1]]);
-      expect(app.searchIndex(['an', 'unusual', 'alliance', 'of', 'man'])).toEqual([[1],[1],[1],[0, 1],[1]]);
+      expect(app.searchIndex(['alice', 'in', 'wonderland']))
+        .toEqual([[0],[0],[0]]);
+      expect(app.searchIndex(['lord', 'of', 'the', 'rings']))
+        .toEqual([[1],[0, 1],[1],[1]]);
+      expect(app.searchIndex(['an', 'unusual', 'alliance', 'of', 'man']))
+        .toEqual([[1],[1],[1],[0, 1],[1]]);
     });
 
-    it('ensures search can handle a varied number of arguments and strings with space characters', function() {
-      expect(app.searchIndex('alice', 'alice in wonderland', 'in')).toEqual([[0],[0],[0],[0],[0]]);
-      expect(app.searchIndex('lord', 'of', 'the', 'rings')).toEqual([[1],[0, 1],[1],[1]]);
-      expect(app.searchIndex('an', 'unusual', 'alliance', 'of', 'man')).toEqual([[1],[1],[1],[0, 1],[1]]);
+    it('search handles varied number of arguments and setences', function() {
+      expect(app.searchIndex('alice', 'alice in wonderland', 'in'))
+        .toEqual([[0],[0],[0],[0],[0]]);
+      expect(app.searchIndex('lord', 'of', 'the', 'rings'))
+        .toEqual([[1],[0, 1],[1],[1]]);
+      expect(app.searchIndex('an', 'unusual', 'alliance', 'of', 'man'))
+        .toEqual([[1],[1],[1],[0, 1],[1]]);
     });
 
     it('ensures search can handle edge cases', function() {
-      expect(app.searchIndex('alice', 'notAvailable', 'in')).toEqual([[0],[],[0]]);
+      expect(app.searchIndex('alice', 'notAvailable', 'in'))
+        .toEqual([[0],[],[0]]);
     });
   });
 });
